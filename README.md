@@ -1,6 +1,6 @@
 # gdeltngrams
 
-This repository provides a Python package for accessing the GDELT Web News NGrams 3.0 API and reconstructing full-text news articles. No web scraping is involved.
+This repository provides a Python package for accessing the GDELT Web News NGrams 3.0 API and locally reconstructing full-text news articles. No web scraping is involved.
 
 To learn more about the dataset, please visit the official announcement: https://blog.gdeltproject.org/announcing-the-new-web-news-ngrams-3-0-dataset/
 
