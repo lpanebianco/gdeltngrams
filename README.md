@@ -20,7 +20,7 @@ import gdeltgrams as gdgrams
 
 If you don't get any error messages, then your installation has been successful.
 
-## Code and Example Usage
+## Example Usage
 
 Data ingestion example:
 
