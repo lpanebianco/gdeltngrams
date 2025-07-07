@@ -25,7 +25,6 @@ If you don't get any error messages, then your installation has been successful.
 Data ingestion example:
 
 ```python
-import
 gdgrams.ingestion(
     dates = "20250101", 
     hours = "00", 
