@@ -1,6 +1,6 @@
 # gdeltngrams
 
-This repository provides a Python package for accessing the GDELT Web News NGrams 3.0 API and locally reconstructing full-text news articles. No web scraping is involved.
+This repository provides a Python package for accessing the GDELT Web News NGrams 3.0 API and locally reconstructing full-text news articles. No web scraping is performed.
 
 To learn more about the dataset, please visit the official announcement: https://blog.gdeltproject.org/announcing-the-new-web-news-ngrams-3-0-dataset/
 
@@ -9,13 +9,13 @@ To learn more about the dataset, please visit the official announcement: https:/
 After cloning the package from the [GitHub repository](https://github.com/lpanebianco/gdeltngrams), open the command line and run:
 
 ```python
-python setup.py install
+pip install -e .
 ```
 
-To ensure the package has been properly installed run python and type:
+To verify the installation, run Python and type:
 
 ```python
-import gdeltgrams as gdgrams
+import gdeltngrams as gdgrams
 ```
 
 If you don't get any error messages, then your installation has been successful.
@@ -47,7 +47,7 @@ gdgrams.multiprocess(
 ) 
 ```
 
-Further details on the [Jupyter notebook](https://github.com/lpanebianco/gdeltngrams/blob/main/gdeltngrams_guide.ipynb).
+For further details, see the [Jupyter notebook](https://github.com/lpanebianco/gdeltngrams/blob/main/gdeltngrams_guide.ipynb).
 
 ## Credits
 
