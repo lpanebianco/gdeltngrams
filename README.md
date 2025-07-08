@@ -51,4 +51,4 @@ For further details, see the [Jupyter notebook](https://github.com/lpanebianco/g
 
 ## Credits
 
-This package was developed with reference to [gdeltnews](https://github.com/iandreafc/gdeltnews), which provided the main multiprocessing function.
+This package was developed with reference to [iandreafc/gdeltnews](https://github.com/iandreafc/gdeltnews), which provided the main multiprocessing function.
