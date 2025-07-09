@@ -1,25 +1,17 @@
 # gdeltngrams/ingestion.py
-import csv
 import gzip
 import json
 import os
-import re
-import tempfile
-from collections import defaultdict
-from functools import partial
-from io import BytesIO
-from typing import Callable, Dict, List, Tuple, Union, Optional
+from typing import List, Union, Optional
 import logging
-
 import requests
 from tqdm import tqdm
-
-from .multiprocess import *
-__all__ = ['ingestion']
-
 import requests
 import gzip
 import traceback
+
+from .multiprocess import *
+__all__ = ['ingestion']
 
 def load_webngram(timestamp, output_dir=".", language_filter=None, url_filter=None):
     url = f"http://data.gdeltproject.org/gdeltv3/webngrams/{timestamp}.webngrams.json.gz"
@@ -27,7 +19,7 @@ def load_webngram(timestamp, output_dir=".", language_filter=None, url_filter=No
     try:
         response = requests.get(url)
         if response.status_code == 404:
-            pass#print(f"{timestamp} webngram not found.")
+            pass
             return
         response.raise_for_status()
     except requests.exceptions.RequestException as req_err:
@@ -38,14 +30,14 @@ def load_webngram(timestamp, output_dir=".", language_filter=None, url_filter=No
     try:
         decompressed = gzip.decompress(response.content).decode("utf-8")
     except (OSError, UnicodeDecodeError) as decompress_err:
-        print(f"Error decompressing or decoding the response for {timestamp}: {decompress_err}")
+        logging.error(f"Error decompressing or decoding the response for {timestamp}: {decompress_err}")
         traceback.print_exc()
         return
 
     try:
         data = [json.loads(line) for line in decompressed.splitlines()]
     except json.JSONDecodeError as json_err:
-        print(f"JSON parsing error for {timestamp}: {json_err}")
+        logging.error(f"JSON parsing error for {timestamp}: {json_err}")
         traceback.print_exc()
         return
 
@@ -69,18 +61,29 @@ def load_webngram(timestamp, output_dir=".", language_filter=None, url_filter=No
         traceback.print_exc()
 
 
-def ingestion(dates: Union[str, List[str]], hours: Optional[str]=None, output_dir=".", language_filter: Optional[str] = None, url_filter: Optional[str] = None) -> None:
-    """
-    This function imports data from the GDELT Web News NGrams 3.0 Dataset, which provides near-real-time global news content.
+DateLike = Union[int, str]
+DateInput = Union[DateLike, List[DateLike]]
+HourInput = Optional[Union[DateLike, List[DateLike]]]
 
-    Parameters:
-    - dates (str or List[str]): a single date (YYYYMMDD) or a list of such elements.
-    - hours (str or List[str], optional): a single hour (HH) or list of hours to filter. Default is None (no hour filtering).
-    - output_dir (str, optional): directory to save the GDELT JSON data. Default is "." (current directory).
-    - language_filter (str, optional): language code to filter articles. Default is None (no language filtering).
-    - url_filter (str, optional): substring that must appear in the source URL. Default is None (no URL filtering).
+def ingestion(
+    dates: DateInput,
+    hours: HourInput = None,
+    output_dir: str = ".",
+    language_filter: Optional[str] = None,
+    url_filter: Optional[str] = None,
+) -> None:
+    """
+    Import data from the GDELT Web News NGrams 3.0 Dataset.
+
+    Args:
+        dates (int, str, list of int or str): One or more dates in YYYYMMDD format.
+        hours (int, str, list of int or str, optional): One or more hours in HH format. Defaults to None (all hours).
+        output_dir (str, optional): Directory to save output files. Defaults to ".".
+        language_filter (str, optional): ISO 639-1 two-letter language code to filter articles. Defaults to None.
+        url_filter (str, optional): Substring to filter URLs. Defaults to None.
+
     Returns:
-    - None. Writes output to given JSON and CSV paths.
+        None: Writes JSON files to the specified output directory.
     """
     if not isinstance(dates, list):
         dates = [dates]

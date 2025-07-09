@@ -15,18 +15,18 @@ pip install -e .
 To verify the installation, run Python and type:
 
 ```python
-import gdeltngrams as gdgrams
+import gdeltngrams as gdn
 ```
 
 If you don't get any error messages, then your installation has been successful.
 
 ## Example Usage
 
-Data ingestion example:
+Data ingestion example: 
 
 ```python
-gdgrams.ingestion(
-    dates = "20250101", 
+gdn.ingestion(
+    dates = "20250101", # YYYYMMDD
     hours = "00", 
     output_dir = 'ingestion_folder', 
     language_filter = "en", 
@@ -36,7 +36,7 @@ gdgrams.ingestion(
 Data processing example:
 
 ```python
-gdgrams.multiprocess(
+gdn.multiprocess(
     input_path = 'ingestion_folder', 
     output_file = 'example.gdeltnews.webngrams.csv', 
     language_filter = "en",

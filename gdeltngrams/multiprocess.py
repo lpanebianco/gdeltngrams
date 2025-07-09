@@ -1,7 +1,6 @@
 # multiprocess/__init__.py
 import json
 import csv
-from collections import defaultdict
 import pandas as pd
 import re
 import os
@@ -112,8 +111,7 @@ def remove_overlap(text: str) -> str:
 
     return text
 
-
-def process_article(url_entries_tuple, language_filter="en"):
+def process_article(url_entries_tuple: Tuple[str, List[Dict]], language_filter: str = "en") -> Dict:
     """Process a single article - designed to be run in parallel"""
     url, entries = url_entries_tuple # entries is a list of dictionaries
         
@@ -144,7 +142,7 @@ def load_and_filter_data(input_file, keywords=None, language_filter="en", url_fi
     Load data from file and filter by language, URL, and keywords preserving original URL order.
 
     Parameters:
-        input_file (str): Path to a JSONL file.
+        input_file (str): Path to a JSON file.
         keywords (str or List[str], optional): Case-insensitive keyword(s).
         language_filter (str, optional): Language code to filter articles. Default is "en".
         url_filter (str, optional): Substring to filter articles by URL. Default is None (no filtering).
@@ -228,25 +226,29 @@ def load_and_filter_data(input_file, keywords=None, language_filter="en", url_fi
 
     return articles, url_order, input_articles_num
 
-
-def multiprocess(input_path: str, output_file: str, language_filter: str = "en",
-                                 url_filter: Optional[str] = None, num_processes: Optional[int] = None,
-                                 keywords: Optional[Union[str, List[str]]] = None,
-                                 text_condition: Optional[Callable[[str], bool]] = None) -> None:
+def multiprocess(
+    input_path: str,
+    output_file: str,
+    language_filter: str = "en",
+    url_filter: Optional[str] = None,
+    num_processes: Optional[int] = None,
+    keywords: Optional[Union[str, List[str]]] = None,
+    text_condition: Optional[Callable[[str], bool]] = None,
+) -> None:
     """
-    Reads one or more line-based JSON files (a single file or a folder) and processes
-    articles in parallel using multiprocessing. All results are written to a single output file.
+    Process JSON files in parallel using multiprocessing.
 
-    Parameters:
-        input_path (str): Path to a JSONL file or a directory containing multiple JSONL files.
-        output_file (str): Path to the output file where results will be saved.
-        language_filter (str, optional): Language code to filter articles. Default is "en".
-        url_filter (str, optional): Substring to filter articles by URL. Default is None (no filtering).
-        num_processes (int, optional): Number of processes for multiprocessing. Default is None, which uses all available CPU cores.
-        keywords (str or List[str], optional): Case-insensitive keyword(s) to filter text content before processing. Each keyword should contain one or two space-separated words. Longer keywords are accepted but may result in missing articles. Default is None (no keyword filtering).
-        text_condition (Callable[[str], bool], optional): Function to filter the reconstructed text. Takes a string and returns True to keep or False to discard. Default is None (no filtering).
+    Args:
+        input_path (str): Path to a JSONL file or directory with JSONL files.
+        output_file (str): Path where processed results are saved.
+        language_filter (str, optional): ISO 639-1 two-letter language code to filter articles. Defaults to "en".
+        url_filter (str, optional): URL substring filter. Defaults to None.
+        num_processes (int, optional): Number of processes to use. Defaults to None (all cores).
+        keywords (str or list of str, optional): Keyword(s) to filter text content. Defaults to None.
+        text_condition (Callable[[str], bool], optional): Function to filter text content. Defaults to None.
+
     Returns:
-        None. Writes processed results to the specified output file.
+        None: Writes processed results to the specified output file.
     """
     input_files = [input_path]
     if os.path.isdir(input_path):
@@ -271,7 +273,7 @@ def multiprocess(input_path: str, output_file: str, language_filter: str = "en",
     if is_empty:
         for input_file in input_files:
             try:
-                logging.info(f"Loading and filtering {input_file} using {num_processes} processes...")
+                logging.info(f"Loading and filtering {input_file}...")
                 # Load and filter data, capturing original URL order
                 articles, url_order, file_total_articles = load_and_filter_data(input_file, keywords, language_filter, url_filter)
             
@@ -282,11 +284,10 @@ def multiprocess(input_path: str, output_file: str, language_filter: str = "en",
                 work_items = list(articles.items())
                 # Skip this file if no actual content to process
                 if not work_items or all(not v for v in articles.values()):
-                    logging.warning(f"No valid articles to process in {input_file}. Skipping.")
+                    logging.info(f"No articles to process in {input_file}. Skipping.")
                     continue
                 total_articles = len(work_items)
-                logging.info(f"Processing {total_articles}/{file_total_articles} articles from {input_file}...")
-
+                logging.info(f"Using {num_processes} logical cores to process {total_articles}/{file_total_articles} articles from {input_file}...")
             
                 # Create a pool of worker processes
                 with mp.Pool(processes=num_processes) as pool:
@@ -295,7 +296,7 @@ def multiprocess(input_path: str, output_file: str, language_filter: str = "en",
                     results = []
             
                     # Use imap to process chunks and track progress
-                    with tqdm(total=total_articles, desc="Processing articles") as pbar:
+                    with tqdm(total=total_articles, desc=f"Processing articles") as pbar:
                         for result in pool.imap_unordered(process_func, work_items, chunksize=10):
                             results.append(result)
                             pbar.update(1)

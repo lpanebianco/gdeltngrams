@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # Jupyter Notebook
+testing.ipynb
 .ipynb_checkpoints
 **/.ipynb_checkpoints
 
@@ -19,3 +20,6 @@ dist/
 # macOS files
 .DS_Store
 
+# Other files and folders
+ingestion_folder/
+example.gdeltnews.webngrams.csv
