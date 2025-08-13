@@ -42,8 +42,8 @@ gdn.multiprocess(
     language_filter = "en",
     url_filter = None, 
     num_processes = None,
-    keywords = ["Trump", "der Leyen"],
-    text_condition = lambda text: len(text) > 300 and "israel" in text.lower() 
+    keywords = ["Trump", "der Leyen"],  # keep articles containing at least one keyword (applied before multiprocessing)
+    text_condition = lambda text: len(text) > 300 and "israel" in text.lower()  # keep articles satisfying text_condition (applied after multiprocessing)
 ) 
 ```
 
