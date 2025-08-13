@@ -33,7 +33,7 @@ gdn.ingestion(
     url_filter = None)
 ```
 
-The ```dates``` and ```hours``` parameters can be provided as either strings or lists of strings. JSON files are filtered accordingly and saved in the output_dir directory.  
+The ```dates``` and ```hours``` parameters can be provided as either strings or lists of strings. JSON files are filtered accordingly and saved in the ```output_dir``` directory.  
 
 Data processing example:
 
