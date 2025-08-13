@@ -49,7 +49,7 @@ gdn.multiprocess(
 ) 
 ```
 
-Here, ```keywords``` filters articles that contain at least one of the specified keywords (max 2 words suggested). This filtering is applied before multiprocessing. The ```text_condition``` function keeps only articles satisfying the given condition, and is applied after multiprocessing.  
+Here, ```keywords``` filters articles that contain at least one of the specified keywords (max 2 words suggested). This filtering is applied **before** multiprocessing. The ```text_condition``` function keeps only articles satisfying the given condition, and is applied **after** multiprocessing.  
 
 For further details, see the [Jupyter notebook](https://github.com/lpanebianco/gdeltngrams/blob/main/gdeltngrams_guide.ipynb).
 
