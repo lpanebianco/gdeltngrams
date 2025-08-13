@@ -26,12 +26,14 @@ Data ingestion example:
 
 ```python
 gdn.ingestion(
-    dates = "20250101", # YYYYMMDD
-    hours = "00", 
+    dates = "20250101",  # YYYYMMDD
+    hours = "00",  # HH
     output_dir = 'ingestion_folder', 
     language_filter = "en", 
     url_filter = None)
 ```
+
+The parameters ```dates``` and ```hours``` can be both strings or lists of strings. JSON files are filtered and then written in the ```output_dir``` directory.  
 
 Data processing example:
 
@@ -47,8 +49,8 @@ gdn.multiprocess(
 ) 
 ```
 
-```keywords``` filters articles that contain at least one of the specified keywords (max 2 words suggested). This filtering is applied before multiprocessing.  
-```text_condition``` keeps only articles satisfying the given condition, and is applied after multiprocessing.  
+Here, ```keywords``` filters articles that contain at least one of the specified keywords (max 2 words suggested). This filtering is applied before multiprocessing.  
+The ```text_condition``` function keeps only articles satisfying the given condition, and is applied after multiprocessing.  
 
 For further details, see the [Jupyter notebook](https://github.com/lpanebianco/gdeltngrams/blob/main/gdeltngrams_guide.ipynb).
 
