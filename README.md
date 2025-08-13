@@ -42,13 +42,13 @@ gdn.multiprocess(
     language_filter = "en",
     url_filter = None, 
     num_processes = None,
-    # keep articles containing at least one keyword (applied before multiprocessing)
     keywords = ["Trump", "der Leyen"],  
-    # keep articles satisfying text_condition (applied after multiprocessing)
     text_condition = lambda text: len(text) > 300 and "israel" in text.lower()  
 ) 
 ```
 
+```keywords``` parameter filters articles that contain at least one of the specified keywords (max 2 words suggested). This filtering is applied before multiprocessing. 
+```text_condition``` keeps only articles satisfying the given condition, and is applied after multiprocessing.
 For further details, see the [Jupyter notebook](https://github.com/lpanebianco/gdeltngrams/blob/main/gdeltngrams_guide.ipynb).
 
 ## Credits
